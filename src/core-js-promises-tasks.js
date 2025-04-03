@@ -218,8 +218,33 @@ function getAllResult(promises) {
  * [promise1, promise4, promise3] => Promise.resolved('104030')
  * [promise1, promise4, promise3, promise2] => Promise.resolved('10403020')
  */
-function queuePromises(/* promises */) {
-  throw new Error('Not implemented');
+function queuePromises(promises) {
+  return new Promise((resolve) => {
+    const result = [];
+    let count = 0;
+    const length = Number(promises.length);
+    if (length === 0) {
+      resolve('');
+      return;
+    }
+    promises.forEach((promise, index) => {
+      promise
+        .then((value) => {
+          result[index] = value;
+          count += 1;
+          if (count === length) {
+            resolve(result.join(''));
+          }
+        })
+        .catch(() => {
+          result[index] = null;
+          count += 1;
+          if (count === length) {
+            resolve(result.join(''));
+          }
+        });
+    });
+  });
 }
 
 module.exports = {
