@@ -61,7 +61,7 @@ function getPromiseResult(source) {
 function getFirstResolvedPromiseResult(promises) {
   return new Promise((resolve, reject) => {
     let count = 0;
-    const { length } = promises;
+    const length = Number(promises.length);
 
     if (length === 0) {
       reject(new Error('No promises provided'));
@@ -100,8 +100,27 @@ function getFirstResolvedPromiseResult(promises) {
  * [promise3, promise6, promise2] => Promise rejected with 2
  * [promise3, promise4, promise6] => Promise rejected with 6
  */
-function getFirstPromiseResult(/* promises */) {
-  throw new Error('Not implemented');
+function getFirstPromiseResult(promises) {
+  return new Promise((resolve, reject) => {
+    let count = 0;
+    const length = Number(promises.length);
+
+    if (length === 0) {
+      reject(new Error('No promises provided'));
+      return;
+    }
+
+    promises.forEach((promise) => {
+      promise
+        .then((value) => resolve(value))
+        .catch(() => {
+          count += 1;
+          if (count === length) {
+            reject(new Error('All promises rejected'));
+          }
+        });
+    });
+  });
 }
 
 /**
